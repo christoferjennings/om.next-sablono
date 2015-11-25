@@ -44,6 +44,46 @@
                                (.preventDefault e))}
                   "go"]])))
 
+(def controls (om/factory Controls))
+
+(defui BasicDiv
+  Object
+  (render [this]
+          (html [:div#basic-div "This is a basic om div with no nesting."
+                 [:hr]])))
+
+(def basic-div (om/factory BasicDiv))
+
+(defui NestingDiv
+  Object
+  (render [this]
+          (html [:div#nesting-div "This is a nesting om div."
+                 [:div.nested-div "This is in the nested div."]
+                 [:div.nested-div "This is in the nested div."]
+                 [:hr]])))
+
+(def nesting-div (om/factory NestingDiv))
+
+(defui NestingWithFor
+  Object
+  (render [this]
+          (html [:div#nesting-with-x "This is a nesting om div."
+                 (for [x (range 2)]
+                   [:button.nested-button {:key x} "This is in the nested div."])
+                 [:hr]])))
+
+(def nesting-with-for (om/factory NestingWithFor))
+
+(defui Top
+  Object
+  (render [this]
+          (let [p (om/props this)]
+            (html [:div#top
+                   (controls p)
+                   (basic-div)
+                   (nesting-div)
+                   (nesting-with-for)
+                   ]))))
 
 (def parser
   (om/parser {:mutate mutate}))
@@ -57,5 +97,5 @@
   (.log js/console "main ---------------------------------")
   (om/add-root!
    reconciler
-   Controls
+   Top
    (gdom/getElement "app")))
